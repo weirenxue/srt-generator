@@ -4,16 +4,27 @@ import moviepy.editor
 import platform
 import cv2 
 import time
-
-inMp4Path = 'inMp4Path'
-outMp4Path = 'outMp4Path'
-createTime = 'yyyy/mm/dd HH:MM' # yyyy/mm/dd HH:MM
-
-fname = pathlib.Path(inMp4Path)
+import sys
+import os
 
 def timestampToDate(timestamp):
     return str(datetime.datetime.fromtimestamp(timestamp))
-if fname.exists():
+
+inMp4Path = sys.argv[1] if len(sys.argv) >= 2 else ''
+outMp4Path = sys.argv[2] if len(sys.argv) >= 3 else ''
+createTime = sys.argv[3] if len(sys.argv) >= 4 else '' # yyyy/mm/dd HH:MM
+
+
+if inMp4Path == '':
+    print("Missing input mp4 file name.")
+    exit(1)
+if outMp4Path == '':
+    print("Missing output mp4 file name.")
+    exit(1)
+    
+
+if os.path.isfile(inMp4Path):
+    fname = pathlib.Path(inMp4Path)
     video = moviepy.editor.VideoFileClip(inMp4Path)
     try:
         createTimestamp = time.mktime(datetime.datetime.strptime(createTime, "%Y/%m/%d %H:%M").timetuple())
@@ -22,6 +33,7 @@ if fname.exists():
         createTimestamp = int(fname.stat().st_ctime)
         if platform.system() != 'Windows':
             createTimestamp = int(fname.stat().st_birthtime)
+    print('Using \'' + timestampToDate(createTimestamp) + '\' as start time.')
     videoDuration = int(video.duration)
     fps = video.fps
     videoWidth = video.subclip(0, 10).w
@@ -57,3 +69,5 @@ if fname.exists():
             output_movie.write(frame)
     cap.release() 
     cv2.destroyAllWindows() 
+else:
+    print(inMp4Path + " doesn't exist.")

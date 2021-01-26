@@ -51,7 +51,7 @@ if os.path.isfile(inMp4Path):
     for i in range(1, int(frames) + 1): 
         curProgress = round((i/frames)*100)
         if curProgress != prevProgress:
-            print(str(curProgress) + "%")
+            print("\r" + str(curProgress) + "%", end="")
             prevProgress = curProgress
         dateTime = timestampToDate(thisRealTimestamp)
         if i % round(fps) == 0:

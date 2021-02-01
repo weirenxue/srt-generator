@@ -2,9 +2,11 @@ import pathlib
 import datetime
 import moviepy.editor
 import platform
+import os
 
 mp4Path = 'mp4-file-path'
 fname = pathlib.Path(mp4Path)
+filenmae = os.path.splitext(os.path.basename(fname))[0]
 
 def convert(seconds):
     hours = seconds // 3600
@@ -17,7 +19,7 @@ def timestampToDate(timestamp):
 def timestampToUtcDate(timestamp):
     return str(datetime.datetime.utcfromtimestamp(timestamp))
 
-with open('result.srt', 'w', encoding="utf-8") as outfile:
+with open(filenmae + '.srt', 'w', encoding="utf-8") as outfile:
     if fname.exists():
         video = moviepy.editor.VideoFileClip(mp4Path)
         createTimestamp = int(fname.stat().st_ctime)
